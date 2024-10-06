@@ -1,0 +1,41 @@
+.photo-container {
+  position: relative;
+  display: inline-block;
+}
+
+.waldo-photo {
+  max-width: 100%;
+  cursor: pointer;
+}
+
+.target-box {
+  position: absolute;
+  width: 100px;  /* Adjust size as necessary */
+  height: 100px;
+  border: 2px solid red;  /* Red border for the targeting box */
+  background-color: rgba(255, 255, 255, 0.7);  /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+select {
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 4px;
+
+}
+
+option {
+  padding: 5px;
+}
+
+
+.waldo-photo{
+  width: 100%;
+  height: auto;
+  border: 1px solid black;
+  border-radius: 5%;
+  box-shadow: bisque;
+  margin: 10px 10px;
+}
