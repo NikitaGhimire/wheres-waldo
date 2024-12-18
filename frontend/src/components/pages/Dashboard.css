@@ -1,0 +1,116 @@
+/* Dashboard container */
+.dashboard-container {
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: flex-start; /* Align the content to the top */
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Container for the image upload form */
+.upload-form-container {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    max-width: 500px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: max-height 0.3s ease-out;
+    width: 100%;
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+
+/* Form becomes visible with smooth transition */
+.upload-form-container.show {
+    display: flex;
+}
+
+/* Style for the toggle button to show/hide the form */
+.upload-toggle-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+/* Hover effect for the toggle button */
+.upload-toggle-btn:hover {
+    background-color: #45a049;
+}
+
+/* Image collection header */
+.image-collection-header {
+    text-align: center;
+    margin-top: 20px; /* Space between the button and the header */
+    font-size: 24px;
+    color: #333;
+}
+
+/* Style for the image list container */
+.post-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 2fr));
+    justify-content: center;
+    gap: 20px;
+    padding: 0;
+    list-style-type: none;
+    margin: 10px;
+}
+
+/* Each post in the list */
+.each-post {
+    text-align: start;
+}
+
+.post-list img {
+    max-width: 100%;
+    height: auto;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.post-list img:hover {
+    transform: scale(1.01);
+    border: 2px solid #6307dc;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+/* Styling for characters (Waldo, Wizard, Wilma images) */
+.characters img {
+    width: 100px;
+    height: auto;
+}
+
+.characters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+/* Header style */
+.dashboard-header h1 {
+    margin: 10px;
+}
+
+/* Notice section */
+.notice {
+    text-align: center;
+    text-decoration: dashed;
+    background: green;
+    color: aliceblue;
+    padding: 5px;
+}
+
+/* Preview container */
+.preview-container {
+    margin-top: 10px;
+}

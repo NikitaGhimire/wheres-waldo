@@ -1,0 +1,38 @@
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.home-container h1{
+    font-size: 80px;
+    font-weight: 700;
+    background: linear-gradient( #B2E4F9, #89CFF0, #048fe6);;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.home-buttons { 
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 50px 50px;
+    position: relative;
+}
+
+.login-button, .register-button {
+    padding:10px 20px;
+    background: linear-gradient( #B2E4F9, #89CFF0, #048fe6);;
+    border: none;
+    border-radius: 5px;
+
+}
+
+.home-container img{
+    max-width: 40%;
+    height: auto;
+    position: relative;
+}
