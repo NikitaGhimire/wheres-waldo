@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/UploadPage.css';
+import { API_BASE_URL } from '../../context/config';
 
 const UploadPage = () => {
     const [title, setTitle] = useState('');
@@ -112,7 +113,7 @@ const UploadPage = () => {
             formData.append('authorId', localStorage.getItem('userId'));
             formData.append('tags', JSON.stringify(tags));
 
-            await axios.post('http://localhost:5001/upload', formData, {
+            await axios.post(`${API_BASE_URL}/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem('token')}`,

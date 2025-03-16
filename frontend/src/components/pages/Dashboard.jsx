@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
-import './Dashboard.css';
+import '../styles/DashboardPage.css';
+import { API_BASE_URL } from '../../context/config';
 
 const DashboardPage = () => {
     const [images, setImages] = useState([]);
@@ -40,7 +41,7 @@ const DashboardPage = () => {
 
     const fetchUserDetails = async () => {
         try {
-            const response = await axios.get(`http://localhost:5001/userDetails`, {
+            const response = await axios.get(`${API_BASE_URL}/userDetails`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -57,7 +58,7 @@ const DashboardPage = () => {
 
     const fetchImages = async () => {
         try {
-            const response = await axios.get(`http://localhost:5001/images`, {
+            const response = await axios.get(`${API_BASE_URL}/images`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -86,7 +87,7 @@ const DashboardPage = () => {
         
         if (window.confirm('Are you sure you want to delete this image?')) {
             try {
-                await axios.delete(`http://localhost:5001/images/${imageId}`, {
+                await axios.delete(`${API_BASE_URL}/images/${imageId}`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -159,7 +160,7 @@ const DashboardPage = () => {
                     images.map((image) => (
                         <li key={image._id} className="each-post" onClick={() => handleImageClick(image)}>
                             <p><strong>{image.title}, {image.authorId.username}</strong></p>
-                            <img src={`http://localhost:5001/${image.url}`} alt={image.title} />
+                            <img src={`${API_BASE_URL}/${image.url}`} alt={image.title} />
                             {image.authorId._id === userId && (
                                 <button 
                                     className="delete-button"

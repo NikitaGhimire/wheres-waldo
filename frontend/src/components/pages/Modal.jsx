@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/Modal.css';
 import axios from 'axios';
+import { API_BASE_URL } from '../../context/config';
 
 const Modal = ({ image, onClose, username }) => {
     const [zoomLevel, setZoomLevel] = useState(1);
@@ -30,7 +31,7 @@ const Modal = ({ image, onClose, username }) => {
 
         const fetchTags = async () => {
             try {
-                const response = await axios.get(`http://localhost:5001/tags/${image._id}`, {
+                const response = await axios.get(`${API_BASE_URL}/tags/${image._id}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setCharacterPositions(response.data.tags);
@@ -119,7 +120,7 @@ const Modal = ({ image, onClose, username }) => {
             console.log('Sending score data:', scoreData);
 
             const response = await axios.post(
-                'http://localhost:5001/api/scoreboard',
+                `${API_BASE_URL}/api/scoreboard`,
                 scoreData,
                 {
                     headers: { 
@@ -142,7 +143,7 @@ const Modal = ({ image, onClose, username }) => {
     // Fetch the scoreboard for the specific image
     const fetchScoreboard = async () => {
         try {
-            const response = await axios.get(`http://localhost:5001/api/scoreboard/${image._id}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/scoreboard/${image._id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             
@@ -226,7 +227,7 @@ const Modal = ({ image, onClose, username }) => {
                 </div>
                 <div className="image-container" onClick={handleImageClick}>
                     <img
-                        src={`http://localhost:5001/${image.url}`}
+                        src={`${API_BASE_URL}/${image.url}`}
                         alt={image.title}
                         className="zoomable-image"
                         style={{ transform: `scale(${zoomLevel})` }}

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import axiosInstance from '../axiosInstance';
+import axiosInstance from '../../context/axiosInstance';
 import { Link } from 'react-router-dom';
 import '../styles/RegisterPage.css';
+import { API_BASE_URL } from '../../context/config';
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');
@@ -15,7 +16,7 @@ const RegisterPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axiosInstance.post(`http://localhost:5001/register`, {
+      const response = await axiosInstance.post(`${API_BASE_URL}/register`, {
         username,
         password,
         role

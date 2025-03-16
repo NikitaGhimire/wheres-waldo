@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/HomePage.css';
 import Modal from './Modal';
+import { API_BASE_URL } from '../../context/config';
 
 const HomePage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -26,7 +27,7 @@ const HomePage = () => {
 
     const fetchImages = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/images', {
+            const response = await axios.get(`${API_BASE_URL}/images`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -44,7 +45,7 @@ const HomePage = () => {
         e.preventDefault(); // Prevent navigation
         if (window.confirm('Are you sure you want to delete this image?')) {
             try {
-                await axios.delete(`http://localhost:5001/images/${imageId}`, {
+                await axios.delete(`${API_BASE_URL}/images/${imageId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 setImages(images.filter(image => image._id !== imageId));
@@ -148,7 +149,7 @@ const HomePage = () => {
                                                     onClick={() => handleImageClick(image)}
                                                 >
                                                     <img 
-                                                        src={`http://localhost:5001/${image.url}`} 
+                                                        src={`${API_BASE_URL}/${image.url}`} 
                                                         alt={image.title} 
                                                     />
                                                     <div className="play-overlay">

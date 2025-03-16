@@ -13,7 +13,13 @@ const app = express();
 connectDB();
 
 //enabling cors for all origin
-app.use(cors());
+app.use(cors({
+  origin: [
+      'wheres-waldo-18ywdk7hc-nikitaghimires-projects.vercel.app',
+      'http://localhost:3000' // Keep local development working
+  ],
+  credentials: true
+}));
 
 //parse incoming body requests/JSON
 app.use(bodyParser.json());
