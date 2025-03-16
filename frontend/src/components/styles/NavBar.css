@@ -2,13 +2,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 1000;
   transition: all 0.3s ease;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
 }
 
 .nav-brand a {
@@ -50,31 +55,36 @@
 }
 
 .dashboard-btn {
-  color: #4a90e2;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
 .dashboard-btn:hover {
-  background-color: rgba(74, 144, 226, 0.1);
+  background-color: #e5e7eb;
+  color: #1f2937;
+  transform: translateY(-1px);
 }
 
 .logout-btn {
-  background-color: #dc3545;
+  background-color: #ef4444;
   color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .logout-btn:hover {
-  background-color: #c82333;
+  background-color: #dc2626;
+  transform: translateY(-1px);
 }
 
 .logout-btn:active {
@@ -82,33 +92,151 @@
 }
 
 .upload-btn {
-  background-color: #28a745;
+  background-color: #5c86e3;
   color: white;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
 .upload-btn:hover {
-  background-color: #218838;
-  transform: translateY(-2px);
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
 }
 
 .upload-btn:active {
   transform: translateY(0);
 }
 
+.home-icon {
+  font-size: 1.8rem;
+  color: #2563eb;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.home-icon:hover {
+  color: #1d4ed8;
+  transform: scale(1.1);
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.menu-toggle:hover {
+  color: #1d4ed8;
+}
+
+.user-role {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: help;
+  position: relative;
+}
+
+.role-icon {
+  font-size: 1.3rem;
+  transition: transform 0.2s ease;
+}
+
+.role-icon.crown {
+  color: #eab308;
+}
+
+.role-icon.user {
+  color: #6b7280;
+}
+
+.role-icon:hover {
+  transform: scale(1.15);
+}
+
 @media (max-width: 768px) {
   .navbar {
-    padding: 1rem;
+    padding: 0.8rem 1.2rem;
   }
   
   .nav-links {
-    gap: 1rem;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    flex-direction: column;
+    padding: 0.8rem;
+    gap: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid #e5e7eb;
   }
-  
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-links > * {
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem;
+  }
+
+  .auth-links {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .user-role {
+    justify-content: center;
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .role-icon {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-btn,
+  .upload-btn,
+  .login-btn,
+  .register-btn,
+  .logout-btn {
+    width: 90%;
+    margin: 0.3rem auto;
+    padding: 0.8rem;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
   .nav-brand a {
     font-size: 1.5rem;
   }
+}
+
+/* Animation for mobile menu */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-links.active {
+  animation: slideDown 0.3s ease forwards;
 }
