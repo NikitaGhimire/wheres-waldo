@@ -1,24 +1,29 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AuthProvider } from './context/AuthContext';
 import HomePage from "./components/pages/HomePage";
 import RegisterPage from "./components/pages/RegisterPage";
 import LoginPage from "./components/pages/LoginPage";
 import DashboardPage from "./components/pages/Dashboard";
-import Header from "./components/pages/Header";
 import Footer from "./components/pages/Footer";
+import NavBar from "./components/pages/NavBar";
+import UploadPage from './components/pages/UploadPage';
 
 function App() {
   return (
-    <Router>
-      <Header />
-      <hr />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/loginPage" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-      </Routes>
-      <Footer />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <NavBar />
+        <hr />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/loginPage" element={<LoginPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/upload" element={<UploadPage />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </AuthProvider>
   );
 }
 
