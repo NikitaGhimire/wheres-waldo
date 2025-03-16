@@ -15,7 +15,7 @@ connectDB();
 //enabling cors for all origin
 app.use(cors({
   origin: [
-      'https://wheres-waldo-phi.vercel.app',
+      'https://wheres-waldo-cyrm.vercel.app/',
       'http://localhost:3000' // Keep local development working
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
