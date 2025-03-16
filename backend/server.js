@@ -15,10 +15,13 @@ connectDB();
 //enabling cors for all origin
 app.use(cors({
   origin: [
-      'wheres-waldo-18ywdk7hc-nikitaghimires-projects.vercel.app',
+      'https://wheres-waldo-phi.vercel.app',
       'http://localhost:3000' // Keep local development working
   ],
-  credentials: true
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  exposedHeaders: ['Authorization']
 }));
 
 //parse incoming body requests/JSON
