@@ -16,6 +16,7 @@ const DashboardPage = () => {
     const [scoreboard, setScoreboard] = useState([]);
     const navigate = useNavigate();
     const role = localStorage.getItem('role');
+    const userId = localStorage.getItem('userId');
 
     useEffect(() => {
         const role = localStorage.getItem('role');
@@ -79,6 +80,26 @@ const DashboardPage = () => {
         setIsTimerRunning(true);
     };
 
+    const handleDeleteImage = async (imageId, e) => {
+        // Stop event from bubbling up to parent
+        e.stopPropagation();
+        
+        if (window.confirm('Are you sure you want to delete this image?')) {
+            try {
+                await axios.delete(`http://localhost:5001/images/${imageId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                // Remove the deleted image from state
+                setImages(images.filter(image => image._id !== imageId));
+            } catch (err) {
+                setError('Failed to delete image');
+                console.error(err);
+            }
+        }
+    };
+
     useEffect(() => {
         let timerInterval;
         if (isTimerRunning) {
@@ -118,7 +139,7 @@ const DashboardPage = () => {
             <div className="dashboard-header">
                 <h1>Hi {username}</h1>
                 {role === 'author' ? (
-                    <h2 className="image-collection-header">Image Collection</h2>
+                    <h2 className="image-collection-header">Your Image Collection</h2>
                 ) : (
                     <>
                         <div className="characters">
@@ -139,6 +160,14 @@ const DashboardPage = () => {
                         <li key={image._id} className="each-post" onClick={() => handleImageClick(image)}>
                             <p><strong>{image.title}, {image.authorId.username}</strong></p>
                             <img src={`http://localhost:5001/${image.url}`} alt={image.title} />
+                            {image.authorId._id === userId && (
+                                <button 
+                                    className="delete-button"
+                                    onClick={(e) => handleDeleteImage(image._id, e)}
+                                >
+                                    Delete
+                                </button>
+                            )}
                         </li>
                     ))
                 ) : (
