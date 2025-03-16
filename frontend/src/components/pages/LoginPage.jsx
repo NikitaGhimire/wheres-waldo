@@ -1,44 +1,28 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
 import '../styles/LoginPage.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null); // To store error messages
-  const [loading, setLoading] = useState(false); // To show loading state
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);  // Set loading state when starting login
-    setError(null);    // Clear any previous errors
+    setLoading(true);
+    setError(null);
+
     try {
-      const response = await axios.post(`http://localhost:5001/login`, { username, password });
-      console.log(response.data);
-      const { token, user } = response.data;
-      localStorage.setItem('token', token); // Store token on successful login
-      localStorage.setItem('role', user.role); // Store the role
-      localStorage.setItem('userId', user.id); //store author id
-      
-      // Verify the token and role are stored
-      console.log('Token:', localStorage.getItem('token'));
-      console.log('Role:', localStorage.getItem('role'));
-      console.log("AuthorId", localStorage.getItem('userId'));
-      
-      login(token, user.role);
-      
-      if (user.role === 'author') {
-        navigate('/dashboard'); // Redirect to admin dashboard
-      } else {
-        navigate('/'); // Redirect to post list for normal users
-      }
+      await login(username, password);
+      navigate('/');
     } catch (error) {
-      setLoading(false);
       setError('Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,7 +32,7 @@ const LoginPage = () => {
         <h2>Welcome</h2>
       </div>
       
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Username</label>
           <input 
