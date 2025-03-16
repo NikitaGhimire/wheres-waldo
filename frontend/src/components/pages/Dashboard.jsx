@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
-import '../styles/DashboardPage.css';
 import { API_BASE_URL } from '../../context/config';
+import '../styles/Dashboard.css'
 
 const DashboardPage = () => {
     const [images, setImages] = useState([]);
