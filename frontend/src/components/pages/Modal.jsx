@@ -1,31 +1,92 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import '../styles/Modal.css';
 import axios from 'axios';
 import { API_BASE_URL } from '../../context/config';
 
-const Modal = ({ image, onClose, username }) => {
+const Modal = ({ image, onClose, username, onGameFinish }) => {
     const [zoomLevel, setZoomLevel] = useState(1);
     const [dropdownPosition, setDropdownPosition] = useState(null);
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-    const [isTagging, setIsTagging] = useState(false);
     const [taggedCharacters, setTaggedCharacters] = useState([]);
     const [timeElapsed, setTimeElapsed] = useState(0);
     const [gameCompleted, setGameCompleted] = useState(false);
     const [scoreboard, setScoreboard] = useState([]);
     const [characterPositions, setCharacterPositions] = useState([]);
-    const [lastGame, setLastGame] = useState(null); // Track the last game played by the user
+    const [lastGame, setLastGame] = useState(null);
     const [playerName, setPlayerName] = useState('Anonymous');
     const timerRef = useRef(null);
 
     const tolerance = 250;
 
-    // Add useEffect to handle username changes
+    // Define fetchScoreboard first
+    const fetchScoreboard = useCallback(async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/scoreboard/${image._id}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            
+            const scores = response.data || [];
+            setScoreboard(scores);
+
+            const playerScores = scores.filter(score => score.username === playerName);
+            if (playerScores.length > 0) {
+                const mostRecentScore = playerScores.reduce((latest, current) => {
+                    return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest;
+                });
+                setLastGame(mostRecentScore);
+            }
+        } catch (error) {
+            console.error('Error fetching scoreboard:', error);
+        }
+    }, [image._id, playerName]);
+
+    // Define postScore after fetchScoreboard
+    const postScore = useCallback(async () => {
+        try {
+            if (!image?.title || !image?._id || typeof timeElapsed !== 'number') {
+                console.log('Missing required score data:', {
+                    username: playerName,
+                    title: image?.title,
+                    imageId: image?._id,
+                    time: timeElapsed
+                });
+                return;
+            }
+
+            const scoreData = {
+                username: playerName,
+                title: image.title,
+                time: timeElapsed,
+                imageId: image._id
+            };
+
+            const response = await axios.post(
+                `${API_BASE_URL}/api/scoreboard`,
+                scoreData,
+                {
+                    headers: { 
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response.data) {
+                const savedScore = response.data.score;
+                setLastGame(savedScore);
+                await fetchScoreboard();
+            }
+        } catch (error) {
+            console.error('Error saving score:', error.response?.data || error);
+        }
+    }, [image, playerName, timeElapsed, fetchScoreboard]);
+
+    // Remove unused handleTagSuccess
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         setPlayerName(username || storedUsername || 'Anonymous');
     }, [username]);
 
-    // Start the timer for the game
     useEffect(() => {
         timerRef.current = setInterval(() => setTimeElapsed((prevTime) => prevTime + 1), 1000);
 
@@ -45,14 +106,13 @@ const Modal = ({ image, onClose, username }) => {
         return () => clearInterval(timerRef.current);
     }, [image]);
 
-    // Check if the game is completed and handle the score submission
     useEffect(() => {
         if (taggedCharacters.length === characterPositions.length && characterPositions.length > 0) {
             clearInterval(timerRef.current);
             setGameCompleted(true);
             postScore();
         }
-    }, [taggedCharacters, characterPositions, playerName]); // Add playerName to dependencies
+    }, [taggedCharacters, characterPositions, postScore]);
 
     // Handle image click to initiate tagging
     const handleImageClick = (event) => {
@@ -66,7 +126,6 @@ const Modal = ({ image, onClose, username }) => {
 
         setDropdownPosition({ x, y });
         setIsDropdownVisible(true);
-        setIsTagging(true);
     };
 
     // Handle character selection for tagging
@@ -90,79 +149,11 @@ const Modal = ({ image, onClose, username }) => {
             }
 
             setIsDropdownVisible(false);
-            setIsTagging(false);
         }
     };
 
     // Handle zoom change
     const handleZoomChange = (event) => setZoomLevel(event.target.value);
-
-    // Post the score to the backend
-    const postScore = async () => {
-        try {
-            if (!image?.title || !image?._id || typeof timeElapsed !== 'number') {
-                console.log('Missing required score data:', {
-                    username: playerName,
-                    title: image?.title,
-                    imageId: image?._id,
-                    time: timeElapsed
-                });
-                return;
-            }
-
-            const scoreData = {
-                username: playerName, // Use playerName directly
-                title: image.title,
-                time: timeElapsed,
-                imageId: image._id
-            };
-
-            console.log('Sending score data:', scoreData);
-
-            const response = await axios.post(
-                `${API_BASE_URL}/api/scoreboard`,
-                scoreData,
-                {
-                    headers: { 
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-
-            if (response.data) {
-                const savedScore = response.data.score;
-                setLastGame(savedScore);
-                await fetchScoreboard(); // Refresh scoreboard after posting
-            }
-        } catch (error) {
-            console.error('Error saving score:', error.response?.data || error);
-        }
-    };
-
-    // Fetch the scoreboard for the specific image
-    const fetchScoreboard = async () => {
-        try {
-            const response = await axios.get(`${API_BASE_URL}/api/scoreboard/${image._id}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            });
-            
-            const scores = response.data || [];
-            setScoreboard(scores);
-
-            // Find the last game played by current player (most recent)
-            const playerScores = scores.filter(score => score.username === playerName);
-            if (playerScores.length > 0) {
-                // Get the most recent score
-                const mostRecentScore = playerScores.reduce((latest, current) => {
-                    return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest;
-                });
-                setLastGame(mostRecentScore);
-            }
-        } catch (error) {
-            console.error('Error fetching scoreboard:', error);
-        }
-    };
 
     // Highlight the last completed game for the player
     const highlightLastGame = (score) => {

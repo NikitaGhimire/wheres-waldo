@@ -35,8 +35,6 @@ const UploadPage = () => {
         }
     };
 
-    const handleZoomIn = () => setScale(prev => Math.min(prev + 0.2, 3));
-    const handleZoomOut = () => setScale(prev => Math.max(prev - 0.2, 0.5));
     const handleResetZoom = () => {
         setScale(1);
         setPosition({ x: 0, y: 0 });

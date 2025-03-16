@@ -167,6 +167,7 @@ const HomePage = () => {
                     </div>
                 </>
             )}
+            {error && <div className="error-message">{error}</div>}
             {selectedImage && (
                 <Modal 
                     image={selectedImage}

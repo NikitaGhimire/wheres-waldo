@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
@@ -9,7 +9,7 @@ const DashboardPage = () => {
     const [images, setImages] = useState([]);
     const [username, setUsername] = useState('');
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [startTime, setStartTime] = useState(null);
     const [elapsedTime, setElapsedTime] = useState(0);
@@ -19,27 +19,7 @@ const DashboardPage = () => {
     const role = localStorage.getItem('role');
     const userId = localStorage.getItem('userId');
 
-    useEffect(() => {
-        const role = localStorage.getItem('role');
-        if (!role) {
-            window.alert('You are not authorised, login or register');
-            navigate('/');
-            return;
-        }
-
-        const fetchData = async () => {
-            try {
-                await fetchUserDetails();
-                await fetchImages();
-            } catch (err) {
-                console.error("Error fetching data:", err);
-            }
-        };
-
-        fetchData();
-    }, [navigate]);
-
-    const fetchUserDetails = async () => {
+    const fetchUserDetails = useCallback(async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}/userDetails`, {
                 headers: {
@@ -54,9 +34,9 @@ const DashboardPage = () => {
                 navigate('/loginPage');
             }
         }
-    };
+    }, [navigate]);
 
-    const fetchImages = async () => {
+    const fetchImages = useCallback(async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}/images`, {
                 headers: {
@@ -72,7 +52,19 @@ const DashboardPage = () => {
                 navigate('/loginPage');
             }
         }
-    };
+    }, [navigate]);
+
+    useEffect(() => {
+        const role = localStorage.getItem('role');
+        if (!role) {
+            window.alert('You are not authorised, login or register');
+            navigate('/');
+            return;
+        }
+
+        fetchImages();
+        fetchUserDetails();
+    }, [navigate, fetchImages, fetchUserDetails]);
 
     const handleImageClick = (image) => {
         setSelectedImage(image);
@@ -137,6 +129,7 @@ const DashboardPage = () => {
 
     return (
         <div className="dashboard-container">
+            {error && <div className="error-message">{error}</div>}
             <div className="dashboard-header">
                 <h1>Hi {username}</h1>
                 {role === 'author' ? (
