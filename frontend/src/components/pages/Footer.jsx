@@ -7,7 +7,7 @@ const Footer = () => {
             <div className="footer-content">
                 <div className="social-links">
                     <a 
-                        href="https://github.com/NikitaGhimire/messaging-app.git" 
+                        href="https://github.com/NikitaGhimire/wheres-waldo.git" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="social-link"

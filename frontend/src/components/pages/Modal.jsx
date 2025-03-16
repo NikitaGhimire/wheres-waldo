@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './Modal.css';
+import '../styles/Modal.css';
 import axios from 'axios';
 
 const Modal = ({ image, onClose, username }) => {

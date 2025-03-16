@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './LoginPage.css';
+import '../styles/LoginPage.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -9,6 +10,7 @@ const LoginPage = () => {
   const [error, setError] = useState(null); // To store error messages
   const [loading, setLoading] = useState(false); // To show loading state
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,7 +28,10 @@ const LoginPage = () => {
       console.log('Token:', localStorage.getItem('token'));
       console.log('Role:', localStorage.getItem('role'));
       console.log("AuthorId", localStorage.getItem('userId'));
-      if (user.role === 'author' || user.role === 'normal') {
+      
+      login(token, user.role);
+      
+      if (user.role === 'author') {
         navigate('/dashboard'); // Redirect to admin dashboard
       } else {
         navigate('/'); // Redirect to post list for normal users
@@ -39,21 +44,25 @@ const LoginPage = () => {
 
   return (
     <div className='main-div'>
-      <div className='title'><h2>Login</h2></div>
-     
+      <div className='title'>
+        <h2>Welcome</h2>
+      </div>
+      
       <form onSubmit={handleLogin}>
-        <div>
-          <label>Username:</label>
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
           <input 
-            type="username" 
+            id="username"
+            type="text" 
             value={username} 
             onChange={e => setUsername(e.target.value)} 
             required
           />
         </div>
-        <div>
-          <label>Password:</label>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
           <input 
+            id="password"
             type="password" 
             value={password} 
             onChange={e => setPassword(e.target.value)} 
@@ -63,11 +72,12 @@ const LoginPage = () => {
         <button className='login' type="submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className="register-link">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </div>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
-    
-    
   );
 };
 
