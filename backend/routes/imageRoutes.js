@@ -2,37 +2,37 @@ const express = require("express");
 const router = express.Router();
 const imageController = require("../controllers/imageController");
 const { authenticateUser } = require("../middleware/authMiddleware");
+const upload = require("../config/multerConfig");
 
-//get all images
+// Get all images
 router.get("/images", authenticateUser, imageController.viewImages);
 
-//upload image
-//upload image (now using multer to handle file uploads)
+// Get single image by ID - no auth required
+router.get('/images/:id', imageController.getImageById);
+
+// Upload image (using multer)
 router.post(
   "/upload",
   authenticateUser,
-  imageController.upload.single("image"),
+  upload.single("image"),
   imageController.uploadImage
 );
 
-//update image
-router.put("/images/:id");
-
-//delete image
+// Delete image
 router.delete("/images/:id", authenticateUser, imageController.deleteImages);
 
+// Delete all images
 router.delete(
   "/deleteAllImages",
   authenticateUser,
   imageController.deleteAllImagesFromDB
 );
-// Add to imageRoutes.js
+
+// Get tags for image
 router.get("/tags/:id", authenticateUser, imageController.getTagsForImage);
 
-// Post a new score
+// Scoreboard routes
 router.post("/scoreboard", authenticateUser, imageController.postScore);
-
-// Get all scores
 router.get("/scoreboard", authenticateUser, imageController.getScoreboard);
 
 module.exports = router;
