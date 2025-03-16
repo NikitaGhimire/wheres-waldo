@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import axiosInstance from '../utils/axiosConfig';
 
 const AuthContext = createContext(null);
 
@@ -37,25 +38,18 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (username, password) => {
         try {
-            const response = await axios.post('http://localhost:5001/login', {
+            const response = await axiosInstance.post('/login', {
                 username,
                 password
             });
             
-            const { token, user } = response.data;
-            
-            // Store user data in localStorage
-            localStorage.setItem('token', token);
-            localStorage.setItem('role', user.role);
-            localStorage.setItem('userId', user.id);
-            localStorage.setItem('username', user.username);
-            
-            // Update state
-            setIsAuthenticated(true);
-            setUserRole(user.role);
-
-            console.log('Login successful, user:', user); // Debug log
-            return user;
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('userId', response.data.user.id);
+                localStorage.setItem('username', response.data.user.username);
+                setUser(response.data.user);
+                return true;
+            }
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
