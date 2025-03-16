@@ -1,12 +1,14 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import axiosInstance from '../utils/axiosConfig';
+import axiosInstance from './axiosInstance';
+import { API_BASE_URL } from './config';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userRole, setUserRole] = useState(localStorage.getItem('role'));
+    const [user, setUser] = useState(null); // Add user state
 
     // Check authentication status and role on mount
     useEffect(() => {
@@ -16,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
             if (token) {
                 try {
-                    const response = await axios.get('http://localhost:5001/userDetails', {
+                    const response = await axios.get(`${API_BASE_URL}/userDetails`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
 
@@ -47,7 +49,10 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('userId', response.data.user.id);
                 localStorage.setItem('username', response.data.user.username);
+                localStorage.setItem('role', response.data.user.role);
                 setUser(response.data.user);
+                setIsAuthenticated(true);
+                setUserRole(response.data.user.role);
                 return true;
             }
         } catch (error) {
@@ -60,12 +65,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.clear();
         setIsAuthenticated(false);
         setUserRole(null);
+        setUser(null); // Clear user state on logout
     };
 
     return (
         <AuthContext.Provider value={{
             isAuthenticated,
             userRole,
+            user, // Add user to context value
             login,
             logout: handleLogout
         }}>
