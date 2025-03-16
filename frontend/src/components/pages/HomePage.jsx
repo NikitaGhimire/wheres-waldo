@@ -75,9 +75,9 @@ const HomePage = () => {
         <div className="home-container">
             {!isAuthenticated ? (
                 <div className="welcome-section">
-                    {/* <h1>Welcome to Where's Waldo</h1> */}
+                    <h1>Welcome to Where's Waldo</h1>
                     <div className="welcome-content">
-                        <img src="./walldowalk.svg" alt="Waldo Banner" className="banner-image" />
+                        <img src="./waldo.png" alt="Waldo Banner" className="banner-image" />
                         <p className="welcome-text">Join the hunt! Find Waldo and friends in challenging puzzle scenes.</p>
                         <div className="home-buttons">
                             <Link to="/loginPage" className="auth-button login">Login</Link>
