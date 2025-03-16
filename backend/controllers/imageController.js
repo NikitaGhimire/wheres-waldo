@@ -1,25 +1,12 @@
 const Image = require("../models/Image");
 const mongoose = require("mongoose");
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
-const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const Tag = require("../models/Tag");
 const Score = require("../models/Scoreboard");
 
-//configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); //folder where images will be stored
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
 
-//storing the uploaded images in multer
-const upload = multer({ storage: storage });
 
 const uploadImage = async (req, res) => {
   try {
@@ -176,6 +163,45 @@ const getTagsForImage = async (req, res) => {
   }
 };
 
+// Get image by ID
+const getImageById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid image ID format" });
+    }
+
+    // Find image and populate both author and tags in one query
+    const image = await Image.findById(id)
+      .populate('authorId', 'username')
+      .populate({
+        path: 'tags',
+        select: 'character x y' // Include _id for tag verification
+      });
+
+    if (!image) {
+      return res.status(404).json({ message: "Image not found" });
+    }
+
+    // Transform the response to include only necessary data
+    // Don't send tag positions to client for security
+    const response = {
+      _id: image._id,
+      title: image.title,
+      url: image.url,
+      author: image.authorId.username,
+      // Only send tag IDs for verification
+      tagIds: image.tags.map(tag => tag._id)
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Post a new score
 const postScore = async (req, res) => {
   const { username, title, time } = req.body;
@@ -221,4 +247,5 @@ module.exports = {
   getTagsForImage,
   postScore,
   getScoreboard,
+  getImageById, 
 };
