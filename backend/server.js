@@ -15,12 +15,12 @@ connectDB();
 //enabling cors for all origin
 app.use(cors({
   origin: [
-      'https://wheres-waldo-cyrm.vercel.app/',
+      'https://wheres-waldo-cyrm.vercel.app',  // Remove trailing slash
       'http://localhost:3000' // Keep local development working
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: false, // Set to false for JWT auth
+  credentials: true,  // Change to true
   exposedHeaders: ['Authorization']
 }));
 
