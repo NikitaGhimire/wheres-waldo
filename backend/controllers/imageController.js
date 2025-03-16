@@ -241,7 +241,6 @@ const getScoreboard = async (req, res) => {
 module.exports = {
   uploadImage,
   viewImages,
-  upload,
   deleteImages,
   deleteAllImagesFromDB,
   getTagsForImage,
