@@ -96,8 +96,23 @@
 .highlight {
     background-color: #f4f4f4; /* Adjust the color to fit your design */
     font-weight: bold;
-  }
+}
 
-  .highlight td {
+.highlight td {
     color: #007bff; /* Change this to any color you want */
-  }
+}
+
+.scoreboard tr.highlight {
+    background-color: #fff3cd;
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0% { background-color: #fff3cd; }
+    50% { background-color: #ffe69c; }
+    100% { background-color: #fff3cd; }
+}
+
+.scoreboard tr.highlight td {
+    font-weight: bold;
+}

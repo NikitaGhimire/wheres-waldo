@@ -13,9 +13,16 @@ const Modal = ({ image, onClose, username }) => {
     const [scoreboard, setScoreboard] = useState([]);
     const [characterPositions, setCharacterPositions] = useState([]);
     const [lastGame, setLastGame] = useState(null); // Track the last game played by the user
+    const [playerName, setPlayerName] = useState('Anonymous');
     const timerRef = useRef(null);
 
     const tolerance = 250;
+
+    // Add useEffect to handle username changes
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        setPlayerName(username || storedUsername || 'Anonymous');
+    }, [username]);
 
     // Start the timer for the game
     useEffect(() => {
@@ -42,10 +49,9 @@ const Modal = ({ image, onClose, username }) => {
         if (taggedCharacters.length === characterPositions.length && characterPositions.length > 0) {
             clearInterval(timerRef.current);
             setGameCompleted(true);
-            postScore(username, image.title, timeElapsed); // Post the score once the game is complete
-            fetchScoreboard(); // Fetch the updated scoreboard for this specific image
+            postScore();
         }
-    }, [taggedCharacters, characterPositions, username, image.title, timeElapsed]);
+    }, [taggedCharacters, characterPositions, playerName]); // Add playerName to dependencies
 
     // Handle image click to initiate tagging
     const handleImageClick = (event) => {
@@ -91,22 +97,45 @@ const Modal = ({ image, onClose, username }) => {
     const handleZoomChange = (event) => setZoomLevel(event.target.value);
 
     // Post the score to the backend
-    const postScore = async (username, imageTitle, time) => {
+    const postScore = async () => {
         try {
-            await axios.post('http://localhost:5001/api/scoreboard', {
-                username,
-                title: imageTitle,
-                time,
-                isLastGame: true,  // Mark the current game as the last game played
-                imageId: image._id, // Send the image ID to associate the score with the correct image
-            }, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            if (!image?.title || !image?._id || typeof timeElapsed !== 'number') {
+                console.log('Missing required score data:', {
+                    username: playerName,
+                    title: image?.title,
+                    imageId: image?._id,
+                    time: timeElapsed
+                });
+                return;
+            }
+
+            const scoreData = {
+                username: playerName, // Use playerName directly
+                title: image.title,
+                time: timeElapsed,
+                imageId: image._id
+            };
+
+            console.log('Sending score data:', scoreData);
+
+            const response = await axios.post(
+                'http://localhost:5001/api/scoreboard',
+                scoreData,
+                {
+                    headers: { 
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response.data) {
+                const savedScore = response.data.score;
+                setLastGame(savedScore);
+                await fetchScoreboard(); // Refresh scoreboard after posting
+            }
         } catch (error) {
-            console.error('Error saving score:', error);
+            console.error('Error saving score:', error.response?.data || error);
         }
     };
 
@@ -116,12 +145,19 @@ const Modal = ({ image, onClose, username }) => {
             const response = await axios.get(`http://localhost:5001/api/scoreboard/${image._id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
-            setScoreboard(response.data || []);
-            // Find the last game completed by the user for this specific image
-            const lastGame = response.data
-                .filter(score => score.username === username)
-                .sort((a, b) => b.time - a.time)[0]; // Sort by time and get the last game
-            setLastGame(lastGame); // Set last game
+            
+            const scores = response.data || [];
+            setScoreboard(scores);
+
+            // Find the last game played by current player (most recent)
+            const playerScores = scores.filter(score => score.username === playerName);
+            if (playerScores.length > 0) {
+                // Get the most recent score
+                const mostRecentScore = playerScores.reduce((latest, current) => {
+                    return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest;
+                });
+                setLastGame(mostRecentScore);
+            }
         } catch (error) {
             console.error('Error fetching scoreboard:', error);
         }
@@ -129,7 +165,8 @@ const Modal = ({ image, onClose, username }) => {
 
     // Highlight the last completed game for the player
     const highlightLastGame = (score) => {
-        return score._id === lastGame?._id ? 'highlight' : ''; // Compare the score's ID with the last game's ID
+        if (!lastGame) return '';
+        return score._id === lastGame._id ? 'highlight' : '';
     };
 
     // Modal for the completed game
