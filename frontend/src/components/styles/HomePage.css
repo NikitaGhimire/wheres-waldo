@@ -1,13 +1,23 @@
 .home-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     flex-direction: column;
-    gap: 5px;
-    max-width: 1200px;
+    gap: 10px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
+    min-height: calc(100vh - 64px);
+    max-width: 1800px;
+}
+
+/* Base Layout */
+.home-container {
+    min-height: calc(100vh - 64px);
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
 .home-container h1{
@@ -28,29 +38,71 @@
     gap: 1rem;
     justify-content: center;
     margin-top: 2rem;
+    gap: 1.5rem;
 }
 
-.login-button, .register-button {
-    padding:10px 20px;
-    background: linear-gradient( #B2E4F9, #89CFF0, #048fe6);;
-    border: none;
-    border-radius: 5px;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
+/* Welcome Section (For non-authenticated users) */
+.welcome-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 100px);
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.login-button {
-    background-color: #4a90e2;
+.welcome-content {
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.banner-image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 2rem;
+    transform: translateY(-20px);
+    animation: float 6s ease-in-out infinite;
+}
+
+.welcome-text {
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin: 2rem 0;
+    line-height: 1.6;
+}
+
+.home-buttons {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+/* Auth Buttons */
+.auth-button {
+    padding: 1rem 2.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.auth-button.login {
+    background-color: #2563eb;
     color: white;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
 }
 
-.register-button {
-    background-color: #28a745;
-    color: white;
+.auth-button.register {
+    background-color: white;
+    color: #2563eb;
+    border: 2px solid #2563eb;
 }
 
 .home-container img{
@@ -64,36 +116,49 @@
     justify-content: center;
     gap: 2rem;
     margin: 2rem 0;
-    padding: 1rem;
-    background-color: #f5f5f5;
-    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: #f8fafc;
+    border-radius: 12px;
 }
 
 .character {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease;
+    flex: 0 0 auto;
+    min-width: 100px;
+}
+
+.character:hover {
+    transform: translateY(-5px);
 }
 
 .character img {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     object-fit: contain;
     margin-bottom: 0.5rem;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
 .image-collection {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
+    padding: 1rem 0;
+    max-width: 100%;
 }
 
 .image-card {
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 
@@ -115,4 +180,574 @@
     width: 100%;
     height: 200px;
     object-fit: cover;
+}
+
+.image-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    background-color: #f8fafc;
+}
+
+/* How to Play Section */
+.how-to-play {
+    background-color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    flex: 1;
+    overflow-y: auto;
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 3rem;
+    margin-top: 2rem;
+    overflow: hidden;
+}
+
+.how-to-play.show {
+    opacity: 1;
+    max-height: calc(100vh - 400px);
+    padding: 1.5rem;
+}
+
+.game-rules {
+    max-width: 600px;
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    list-style-type: none;
+    padding: 0;
+}
+
+.game-rules li {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #475569;
+    padding: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.game-rules li::before {
+    content: "•";
+    color: #2563eb;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/* Available Games Section */
+.available-games {
+    margin-top: 3rem;
+    width: 100%;
+    flex: 1;
+    padding-bottom: 2rem;
+    padding: 1rem 0;
+}
+
+.game-link {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+.game-link img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.play-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.play-overlay span {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border: 2px solid white;
+    border-radius: 4px;
+}
+
+.game-link:hover .play-overlay {
+    opacity: 1;
+}
+
+.delete-button {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+    background-color: #dc2626;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+.no-games {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+}
+
+.game-container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: calc(100vh - 130px); /* Account for navbar and footer */
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    background-color: #f8fafc;
+    border-radius: 24px;
+}
+
+.game-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 500px 1fr;
+    gap: 3rem;
+}
+
+.instructions-toggle {
+    width: 100%;
+    padding: 1rem;
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #2563eb;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1024px) {
+    .game-layout {
+        flex-direction: column;
+        grid-template-columns: 1fr;
+    }
+
+    .instructions-toggle {
+        display: block;
+    }
+
+    .how-to-play {
+        display: none;
+        flex: none;
+        width: 100%;
+        position: static;
+    }
+
+    .how-to-play.show {
+        display: block;
+        max-height: fit-content;
+    }
+
+    .available-games {
+        width: 100%;
+    }
+
+    .instructions-column {
+        height: auto;
+        position: static;
+        top: 0;
+        max-height: none;
+        padding-bottom: 1rem;
+    }
+
+    .waldo-image {
+        max-width: 200px;
+        margin: 0 auto 2rem;
+    }
+
+    .image-collection {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .how-to-play.show {
+        max-height: none;
+        margin-bottom: 2rem;
+    }
+
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .instructions-column {
+        position: relative;
+        top: 0;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    .home-container {
+        padding: 1rem;
+    }
+
+    .characters-guide {
+        gap: 1.5rem;
+        padding: 0.8rem;
+    }
+
+    .character img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .game-container {
+        padding: 1rem;
+    }
+
+    .image-collection {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .game-title {
+        font-size: 2rem;
+    }
+
+    .welcome-section {
+        padding: 2rem 1rem;
+    }
+
+    .home-buttons {
+        flex-direction: column;
+    }
+
+    .auth-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .home-container h1 {
+        font-size: clamp(40px, 8vw, 80px);
+    }
+
+    .banner-image {
+        max-width: 90%;
+    }
+
+    .characters-guide {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+
+    .auth-button {
+        margin: 0.5rem 0;
+    }
+
+    .game-container {
+        margin: 1rem;
+    }
+
+    .instructions-column {
+        margin-bottom: 2rem;
+    }
+
+    .how-to-play {
+        margin: 0;
+    }
+
+    .image-collection {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+
+    .home-container {
+        padding: 1rem;
+    }
+
+    .welcome-section {
+        padding: 2rem 1rem;
+    }
+
+    .home-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .auth-button {
+        width: 100%;
+    }
+
+    .image-collection {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .game-container {
+        padding: 1rem;
+    }
+
+    .image-collection {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 0.5rem;
+    }
+
+    .instructions-toggle {
+        width: 100%;
+    }
+
+    .image-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .home-container {
+        padding: 1rem;
+    }
+
+    .welcome-text {
+        font-size: 1rem;
+    }
+
+    .character img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .characters-guide {
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+
+    .image-card {
+        margin: 0.5rem;
+    }
+
+    .game-container {
+        padding: 0.5rem;
+    }
+
+    .game-layout {
+        gap: 1rem;
+    }
+
+    .instructions-column {
+        margin-bottom: 1rem;
+    }
+
+    .image-collection {
+        grid-template-columns: 1fr;
+    }
+
+    .waldo-image {
+        max-width: 200px;
+    }
+
+    .characters-guide {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .character img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .image-collection {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Media query for larger screens */
+@media (min-width: 1025px) {
+    .game-layout {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .how-to-play {
+        margin-top: 1rem;
+    }
+}
+
+@media (min-width: 1400px) {
+    .image-collection {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.game-title {
+    text-align: center;
+    color: #1e293b;
+    margin: 2rem 0;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.waldo-image  {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 2rem 0;
+    max-width: 300px;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.waldo-image {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    margin: 0 auto 1rem;
+    border-radius: 12px;
+}
+
+.instructions-column {
+    position: sticky;
+    top: 80px; /* Account for navbar */
+    align-self: start;
+    height: auto;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Add max 3 columns when screen is large enough */
+@media (min-width: 1200px) {
+    .image-collection {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Adjust for medium screens */
+@media (max-width: 1199px) and (min-width: 768px) {
+    .image-collection {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        max-width: 100%;
+    }
+}
+
+/* Adjust for mobile screens */
+@media (max-width: 767px) {
+    .image-collection {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .instructions-column {
+        position: relative;
+        top: 0;
+        max-height: none;
+        margin-bottom: 2rem;
+    }
+
+    .how-to-play.show {
+        max-height: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-container,
+    .game-container {
+        padding: 1rem;
+    }
+
+    .home-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .auth-button {
+        width: 100%;
+    }
+
+    .image-collection {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 0.5rem;
+    }
+
+    .instructions-column {
+        padding: 1rem;
+    }
+
+    .characters-guide {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .character img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .image-collection {
+        grid-template-columns: 1fr;
+    }
+
+    .image-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0% { transform: translateY(-20px); }
+    50% { transform: translateY(0); }
+    100% { transform: translateY(-20px); }
 }
