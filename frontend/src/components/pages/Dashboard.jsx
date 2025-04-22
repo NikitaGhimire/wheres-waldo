@@ -19,35 +19,28 @@ const DashboardPage = () => {
     const role = localStorage.getItem('role');
     const userId = localStorage.getItem('userId');
 
-    const fetchUserDetails = useCallback(async () => {
+    const fetchInitialData = useCallback(async () => {
+        setLoading(true);
         try {
-            const response = await axios.get(`${API_BASE_URL}/userDetails`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-            setUsername(response.data.username);
-        } catch (err) {
-            console.error("Error fetching user details:", err);
-            setError(err.response?.data?.error || 'Failed to fetch user details');
-            if (err.response?.status === 401) {
-                navigate('/loginPage');
-            }
-        }
-    }, [navigate]);
+            const [userResponse, imagesResponse] = await Promise.all([
+                axios.get(`${API_BASE_URL}/userDetails`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }),
+                axios.get(`${API_BASE_URL}/images`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+            ]);
 
-    const fetchImages = useCallback(async () => {
-        try {
-            const response = await axios.get(`${API_BASE_URL}/images`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-            setImages(response.data.images || []);
+            setUsername(userResponse.data.username);
+            setImages(imagesResponse.data.images || []);
             setLoading(false);
         } catch (err) {
-            console.error("Error fetching images:", err);
-            setError(err.response?.data?.error || 'Failed to fetch images');
+            console.error("Error fetching data:", err);
+            setError(err.response?.data?.error || 'Failed to fetch data');
             if (err.response?.status === 401) {
                 navigate('/loginPage');
             }
@@ -62,9 +55,8 @@ const DashboardPage = () => {
             return;
         }
 
-        fetchImages();
-        fetchUserDetails();
-    }, [navigate, fetchImages, fetchUserDetails]);
+        fetchInitialData();
+    }, [navigate, fetchInitialData]);
 
     const handleImageClick = (image) => {
         setSelectedImage(image);
@@ -124,7 +116,12 @@ const DashboardPage = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="loading-container">
+                <div className="spinner"></div>
+                <p>Loading your game board...</p>
+            </div>
+        );
     }
 
     return (
@@ -153,7 +150,13 @@ const DashboardPage = () => {
                     images.map((image) => (
                         <li key={image._id} className="each-post" onClick={() => handleImageClick(image)}>
                             <p><strong>{image.title}, {image.authorId.username}</strong></p>
-                            <img src={`${API_BASE_URL}/${image.url}`} alt={image.title} />
+                            <img 
+                                src={`${API_BASE_URL}/${image.url}`} 
+                                alt={image.title} 
+                                loading="lazy" 
+                                width="300" 
+                                height="200"
+                            />
                             {image.authorId._id === userId && (
                                 <button 
                                     className="delete-button"

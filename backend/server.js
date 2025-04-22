@@ -31,6 +31,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/uploads", express.static("uploads"));
 
+app.use('/images', (req, res, next) => {
+    res.set('Cache-Control', 'public, max-age=31536000');
+    next();
+});
+
 app.use("/", UserRouter);
 app.use("/", ImageRouter);
 app.use("/tags", tagRoutes);
