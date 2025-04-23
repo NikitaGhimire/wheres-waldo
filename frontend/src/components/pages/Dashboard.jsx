@@ -15,6 +15,7 @@ const DashboardPage = () => {
     const [elapsedTime, setElapsedTime] = useState(0);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [scoreboard, setScoreboard] = useState([]);
+    const [imageCache, setImageCache] = useState(new Map());
     const navigate = useNavigate();
     const role = localStorage.getItem('role');
     const userId = localStorage.getItem('userId');
@@ -47,6 +48,25 @@ const DashboardPage = () => {
         }
     }, [navigate]);
 
+    const preloadImages = useCallback(async (images) => {
+        const promises = images.map(image => {
+            if (!imageCache.has(image._id)) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        imageCache.set(image._id, img);
+                        resolve();
+                    };
+                    img.onerror = reject;
+                    img.src = `${API_BASE_URL}/${image.url}`;
+                });
+            }
+            return Promise.resolve();
+        });
+
+        await Promise.all(promises);
+    }, [imageCache]);
+
     useEffect(() => {
         const role = localStorage.getItem('role');
         if (!role) {
@@ -57,6 +77,12 @@ const DashboardPage = () => {
 
         fetchInitialData();
     }, [navigate, fetchInitialData]);
+
+    useEffect(() => {
+        if (images.length > 0) {
+            preloadImages(images);
+        }
+    }, [images, preloadImages]);
 
     const handleImageClick = (image) => {
         setSelectedImage(image);
